@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tic Tac Toe buatan luthfi ganteng</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#222;
+    color:white;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin-top:30px;
+}
+
+h1{
+    margin-bottom:10px;
+}
+
+#status{
+    font-size:20px;
+    margin-bottom:20px;
+}
+
+.board{
+    display:grid;
+    grid-template-columns:repeat(3,100px);
+    gap:5px;
+}
+
+.cell{
+    width:100px;
+    height:100px;
+    background:#333;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:50px;
+    cursor:pointer;
+    border-radius:10px;
+}
+
+.cell:hover{
+    background:#444;
+}
+
+button{
+    margin-top:20px;
+    padding:10px 20px;
+    font-size:16px;
+    cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<h1>Tic Tac Toe</h1>
+<div id="status">Giliran: X</div>
+
+<div class="board" id="board">
+    <div class="cell" data-index="0"></div>
+    <div class="cell" data-index="1"></div>
+    <div class="cell" data-index="2"></div>
+    <div class="cell" data-index="3"></div>
+    <div class="cell" data-index="4"></div>
+    <div class="cell" data-index="5"></div>
+    <div class="cell" data-index="6"></div>
+    <div class="cell" data-index="7"></div>
+    <div class="cell" data-index="8"></div>
+</div>
+
+<button onclick="resetGame()">Main Lagi</button>
+
+<script>
+const cells = document.querySelectorAll('.cell');
+const statusText = document.getElementById('status');
+
+let board = ["","","","","","","","",""];
+let currentPlayer = "X";
+let gameActive = true;
+
+const winPatterns = [
+    [0,1,2],
+    [3,4,5],
+    [6,7,8],
+    [0,3,6],
+    [1,4,7],
+    [2,5,8],
+    [0,4,8],
+    [2,4,6]
+];
+
+cells.forEach(cell => {
+    cell.addEventListener('click', handleClick);
+});
+
+function handleClick() {
+    const index = this.dataset.index;
+
+    if(board[index] !== "" || !gameActive) return;
+
+    board[index] = currentPlayer;
+    this.textContent = currentPlayer;
+
+    checkWinner();
+
+    if(gameActive){
+        currentPlayer = currentPlayer === "X" ? "O" : "X";
+        statusText.textContent = `Giliran: ${currentPlayer}`;
+    }
+}
+
+function checkWinner(){
+    let winner = false;
+
+    winPatterns.forEach(pattern => {
+        const [a,b,c] = pattern;
+
+        if(
+            board[a] &&
+            board[a] === board[b] &&
+            board[a] === board[c]
+        ){
+            winner = true;
+        }
+    });
+
+    if(winner){
+        statusText.textContent = `Pemain ${currentPlayer} Menang! 🎉`;
+        gameActive = false;
+        return;
+    }
+
+    if(!board.includes("")){
+        statusText.textContent = "Seri! 🤝";
+        gameActive = false;
+    }
+}
+
+function resetGame(){
+    board = ["","","","","","","","",""];
+    currentPlayer = "X";
+    gameActive = true;
+
+    statusText.textContent = "Giliran: X";
+
+    cells.forEach(cell => {
+        cell.textContent = "";
+    });
+}
+</script>
+
+</body>
+</html>
